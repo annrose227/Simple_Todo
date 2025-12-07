@@ -49,6 +49,8 @@ import "./App.css";
 function App() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
+  const today = new Date();
+  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
   return (
     <div className="app">
       <div className="mainHeading">
@@ -56,7 +58,7 @@ function App() {
       </div>
       <div className="subHeading">
         <br />
-        <h2>Whoop, it's Wednesday 🌝 ☕ </h2>
+        <h2>Whoop, it's {weekday} 🌝 ☕ </h2>
       </div>
       <div className="input">
         <input
@@ -98,7 +100,10 @@ function App() {
                 <p>{obj.text}</p>
               </div>
               <div className="right">
-                <i className="fas fa-times"></i>
+                <i
+                  className="fas fa-times"
+                  onClick={() => setTodos(todos.filter((t) => t.id !== obj.id))}
+                ></i>
               </div>
             </div>
           );
