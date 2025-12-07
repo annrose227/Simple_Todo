@@ -66,20 +66,24 @@ function App() {
           placeholder="🖊️ Add item..."
         />
         <i
-          onCLick={() => setTodo([...todos, todo])}
+          onClick={() => setTodos([...todos, todo])}
           className="fas fa-plus"
         ></i>
       </div>
       <div className="todos">
-        <div className="todo">
-          <div className="left">
-            <input type="checkbox" name="" id="" />
-            <p>Rect tutorial</p>
-          </div>
-          <div className="right">
-            <i className="fas fa-times"></i>
-          </div>
-        </div>
+        {todos.map((value) => {
+          return (
+            <div className="todo">
+              <div className="left">
+                <input type="checkbox" name="" id="" />
+                <p>{value}</p>
+              </div>
+              <div className="right">
+                <i className="fas fa-times"></i>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
