@@ -49,71 +49,94 @@ import "./App.css";
 function App() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
-  const today = new Date();
-  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
+
+  const addTask = () => {
+    if (todo.trim() !== "") {
+      setTodos([...todos, { id: Date.now(), text: todo, status: false }]);
+      setTodo("");
+    }
+  };
+
+  const toggleStatus = (id) => {
+    setTodos(
+      todos.map((task) => {
+        if (task.id === id) {
+          return { ...task, status: !task.status };
+        }
+        return task;
+      })
+    );
+  };
+
+  const deleteTask = (id) => {
+    setTodos(todos.filter((task) => task.id !== id));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTask();
+    }
+  };
+
   return (
     <div className="app">
-      <div className="mainHeading">
-        <h1>ToDo List</h1>
-      </div>
-      <div className="subHeading">
-        <br />
-        <h2>Whoop, it's {weekday} 🌝 ☕ </h2>
-      </div>
-      <div className="input">
-        <input
-          value={todo}
-          onChange={(e) => setTodo(e.target.value)}
-          type="text"
-          placeholder="🖊️ Add item..."
-        />
-        <i
-          onClick={() =>
-            setTodos([...todos, { id: Date.now(), text: todo, status: false }])
-          }
-          className="fas fa-plus"
-        ></i>
-      </div>
-      <div className="todos">
-        {todos.map((obj) => {
-          return (
-            <div className="todo">
-              <div className="left">
-                <input
-                  onChange={(e) => {
-                    console.log(e.target.checked);
-                    console.log(obj);
-                    setTodos(
-                      todos.filter((obj2) => {
-                        if (obj2.id === obj.id) {
-                          obj2.status = e.target.checked;
-                        }
-                        return obj2;
-                      })
-                    );
-                  }}
-                  value={obj.status}
-                  type="checkbox"
-                  name=""
-                  id=""
-                />
-                <p>{obj.text}</p>
-              </div>
-              <div className="right">
-                <i
-                  className="fas fa-times"
-                  onClick={() => setTodos(todos.filter((t) => t.id !== obj.id))}
-                ></i>
-              </div>
+      <div className="container">
+        <div className="header">
+          <h1>Task Tracker</h1>
+          <p className="subtitle">Stay organized and get things done</p>
+        </div>
+
+        <div className="input-section">
+          <input
+            value={todo}
+            onChange={(e) => setTodo(e.target.value)}
+            onKeyPress={handleKeyPress}
+            type="text"
+            placeholder="Enter a new task..."
+            className="task-input"
+          />
+          <button onClick={addTask} className="add-button">
+            Add Task
+          </button>
+        </div>
+
+        <div className="tasks-section">
+          {todos.length === 0 ? (
+            <div className="empty-state">
+              <p>No tasks yet. Add one to get started!</p>
             </div>
-          );
-        })}
-        {todos.map((obj) => {
-          if (obj.status) {
-            return <h1>{obj.text}</h1>;
-          }
-          return null;
-        })}
+          ) : (
+            <div className="tasks-list">
+              {todos.map((task) => (
+                <div key={task.id} className={`task-item ${task.status ? "completed" : "pending"}`}>
+                  <div className="task-content">
+                    <div className="task-info">
+                      <span className="task-text">{task.text}</span>
+                      <span className={`task-status ${task.status ? "status-completed" : "status-pending"}`}>
+                        {task.status ? "✓ Completed" : "○ Pending"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="task-actions">
+                    <button
+                      onClick={() => toggleStatus(task.id)}
+                      className={`status-button ${task.status ? "mark-pending" : "mark-completed"}`}
+                    >
+                      {task.status ? "Mark Pending" : "Mark Completed"}
+                    </button>
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="delete-button"
+                      aria-label="Delete task"
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
